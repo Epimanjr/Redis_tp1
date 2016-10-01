@@ -22,13 +22,23 @@ public class Article {
     private static final int ARTICLE_EXPIRE = Delay.SEMAINE.getSeconds();
 
     /**
-     * Ajout de notre article dans la base Redis.
+     * Ajout d'un article dans la base Redis
      *
      * @param conn Connexion à la base
-     * @return ID de l'article
+     * @param utilisateur Créateur de l'article
+     * @param titre Titre de l'article
+     * @param url Lien de l'article
+     * @return .
      */
-    public static String ajouterArticle(Jedis conn, String utilisateur, String titre, String url) {
-        String articleId = String.valueOf(conn.incr("article:"));
+    public static String addArticle(Jedis conn, String utilisateur, String titre, String url) {
+        String articleId = "";
+        try {
+            articleId = String.valueOf(conn.incr("article:"));
+        } catch (Exception e) {
+            // C'est le premier article
+            conn.set("article:", "1");
+            articleId = "1";
+        }
 
         // Gestion des votes pour cet article
         String articleSelectionne = "selectionne:" + articleId;
