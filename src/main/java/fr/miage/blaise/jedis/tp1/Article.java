@@ -9,7 +9,10 @@ import redis.clients.jedis.Jedis;
  */
 public class Article {
     
-    private static final int voteIncrement = 457;
+    /**
+     * A chaque vote, le score d'un article augmente de 457.
+     */
+    private static final int VOTE_INCREMENT = 457;
     
 
     private String utilisateur;
@@ -41,7 +44,7 @@ public class Article {
         conn.zadd("time:", timestamp, articleId);
         
         // Pour la liste des articles selon le score
-        conn.zadd("score:", timestamp + voteIncrement, articleId);
+        conn.zadd("score:", timestamp + VOTE_INCREMENT, articleId);
         
         return articleId;
     }
