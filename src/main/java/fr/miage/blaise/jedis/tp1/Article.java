@@ -31,13 +31,12 @@ public class Article {
      * @return .
      */
     public static String addArticle(Jedis conn, String utilisateur, String titre, String url) {
-        String articleId = "";
-        try {
+        String articleId;
+        if(conn.exists("article:")) {
             articleId = String.valueOf(conn.incr("article:"));
-        } catch (Exception e) {
-            // C'est le premier article
-            conn.set("article:", "1");
+        } else {
             articleId = "1";
+            conn.set("article:", "1");
         }
 
         // Gestion des votes pour cet article
@@ -111,7 +110,7 @@ public class Article {
     }
 
     private static void incVotesArticle(Jedis conn, int idArticle, int nbVotes) {
-        conn.hincrBy("article:" + idArticle, "nbVotes", nbVotes);
+        conn.hincrBy("article:" + idArticle, "nbvotes", nbVotes);
     }
 
     /**
